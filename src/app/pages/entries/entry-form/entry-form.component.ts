@@ -1,27 +1,20 @@
-import { Component, OnInit, AfterContentChecked } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { Component, Injector } from '@angular/core';
+import { Validators } from '@angular/forms';
 import toastr from 'toastr';
 
 import { Entry } from '../shared/entry.model';
 import { EntryService } from '../shared/entry.service';
 import { Category } from '../../categories/shared/category.model';
 import { CategoryService } from '../../categories/shared/category.service';
+import { BaseResourceFormComponent } from 'src/app/shared/components/base-resource-form/base-resource-form';
 
 @Component({
   selector: 'app-entry-form',
   templateUrl: './entry-form.component.html',
   styleUrls: ['./entry-form.component.scss']
 })
-export class EntryFormComponent implements OnInit, AfterContentChecked {
+export class EntryFormComponent extends BaseResourceFormComponent<Entry> {
 
-  currentAction: string;
-  entryForm: FormGroup;
-  pageTitle: string;
-  serverErrorMessages: string[] = null;
-  submittingForm: boolean = false;
-  entry: Entry = new Entry();
   categories: Array<Category>;
 
   imaskConfig = {
@@ -47,21 +40,16 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
     clear: 'Limpar'
   }
 
-  constructor(private _entryService: EntryService,
-              private _categoryService: CategoryService,
-              private _route: ActivatedRoute,
-              private _router: Router,
-              private _formBuilder: FormBuilder) { }
+  constructor(protected entryService: EntryService,
+              protected categoryService: CategoryService,
+              protected injector: Injector){
 
-  ngOnInit() {
-    this.serCurrentAction();
-    this.buildentryForm();
-    this.loadEntry();
-    this.loadCategories();
+    super(new Entry(), injector, entryService, Entry.fromJson);
   }
 
-  ngAfterContentChecked(): void {
-    this.setPageTitle();
+  ngOnInit() {
+    this.loadCategories();
+    super.ngOnInit();
   }
 
   get typeOptions(): Array<any> {
@@ -75,57 +63,15 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
     )
   }
 
-  submitForm() {
-    this.submittingForm = true;
-
-    if (this.currentAction == 'new')
-      this.create();
-    else
-      this.update();
-  }
-
-  create() {
-    const entry: Entry = Object.assign(new Entry(), this.entryForm.value);
-    
-    this._entryService.create(entry).subscribe(
-      entry => this.actionsForSuccess(entry),
-      error => this.actionsFormError(error)
+  loadCategories() {
+    this.categoryService.getAll().subscribe(
+      categories => this.categories = categories,
+      () => toastr.error('Ocorreu um erro ao carregar a lista de categorias')
     )
   }
 
-  update() {
-    const entry: Entry = Object.assign(new Entry(), this.entryForm.value);
-    
-    this._entryService.update(entry).subscribe(
-      entry => this.actionsForSuccess(entry),
-      error => this.actionsFormError(error)
-    )
-  }
-
-  actionsForSuccess(entry: Entry) {
-    toastr.success('Salvo com sucesso!');
-    this._router.navigateByUrl('entries', { skipLocationChange: true }).then(
-      () => this._router.navigate(['entries', entry.id, 'edit'])
-    )
-  }
-
-  actionsFormError(error: any) {
-    toastr.error('Ocorreu um erro ao salvar!');
-
-    this.submittingForm = false;
-
-    if(error.status == 422)
-      this.serverErrorMessages = JSON.parse(error._body).errors;
-    else 
-      this.serverErrorMessages = ["Falha na comunicação com o servidor. Por favor, tente mais tarde."];
-  }
-
-  serCurrentAction() {
-    this._route.snapshot.url[0].path == 'new' ? this.currentAction = 'new' : this.currentAction = 'edit'
-  }
-
-  buildentryForm() {
-    this.entryForm = this._formBuilder.group({
+  protected buildResourceForm(): void {
+    this.resourceForm = this.formBuilder.group({
       id: [null],
       description: [null],
       name: [null, [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
@@ -135,35 +81,5 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
       paid:  [true, [Validators.required]],
       categoryId:  [null, [Validators.required]]
     })
-  }
-
-  loadEntry() {
-    if(this.currentAction == 'edit') {
-      this._route.paramMap.pipe(
-        switchMap(params => this._entryService.getById(+params.get('id')))
-      ).subscribe(
-        (entry) => {
-          this.entry = entry;
-          this.entryForm.patchValue(entry);
-        },
-        () => toastr.error('Ocorreu um erro no servidor, tente mais tarde.')
-      )
-    }
-  }
-
-  loadCategories() {
-    this._categoryService.getAll().subscribe(
-      categories => this.categories = categories,
-      () => toastr.error('Ocorreu um erro ao carregar a lista de categorias')
-    )
-  }
-
-  setPageTitle() {
-    if (this.currentAction == 'new') 
-      this.pageTitle = 'Cadastrando Lançamento'
-    else {
-      const entryName = this.entry.name || '';
-      this.pageTitle = `Editando Lançamento: ${entryName}`;
-    }
   }
 }
