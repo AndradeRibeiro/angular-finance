@@ -20,8 +20,8 @@ export abstract class BaseResourceFormComponent<T extends BaseResourceModel> imp
   protected formBuilder: FormBuilder;
 
   constructor(public resource: T,
-              protected resourceService: BaseResourceService<T>,
               protected injector: Injector,
+              protected resourceService: BaseResourceService<T>,
               protected jsonDataToResourceFn: (jsonData: any) => T) {
        
     this.route = injector.get(ActivatedRoute);  
