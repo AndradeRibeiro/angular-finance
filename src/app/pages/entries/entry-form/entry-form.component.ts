@@ -56,7 +56,7 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
   ngOnInit() {
     this.serCurrentAction();
     this.buildentryForm();
-    this.loadentry();
+    this.loadEntry();
     this.loadCategories();
   }
 
@@ -137,7 +137,7 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
     })
   }
 
-  loadentry() {
+  loadEntry() {
     if(this.currentAction == 'edit') {
       this._route.paramMap.pipe(
         switchMap(params => this._entryService.getById(+params.get('id')))
@@ -166,5 +166,4 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
       this.pageTitle = `Editando Lançamento: ${entryName}`;
     }
   }
-
 }
