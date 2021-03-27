@@ -2,19 +2,12 @@
   [items]="[{text: 'Categorias', link: '/categories'}, {text: pageTitle}]">
 </app-bread-crumb>
 
-<div class="row mb-4">
-  <div class="col-md">
-    <h1 class="h2 border-left pl-2">
-      {{ pageTitle }}
-    </h1>
-  </div>
-
-  <div class="col-md">
-    <a routerLink="/categories" class="btn btn-light float-right">
-      << Voltar
-    </a>
-  </div>
-</div>
+<app-page-header
+  [page-title]="pageTitle"
+  button-text="<< Voltar"
+  button-link="/categories"
+  button-class="btn btn-light"
+></app-page-header>
 
 <form [formGroup]="resourceForm" (submit)="submitForm()">
 
@@ -30,22 +23,14 @@
           <label for="name">Nome</label>
           <input type="text" class="form-control" id="name" formControlName="name">
 
-          <div class="text-danger" *ngIf="resourceForm.get('name').invalid && resourceForm.get('name').touched">
-            <div *ngIf="resourceForm.get('name').errors.required">campo obrigatório</div>
-            <div *ngIf="resourceForm.get('name').errors.minLength">deve ter no mínimo 2 caracteres</div>
-            <div *ngIf="resourceForm.get('name').errors.maxLength">deve ter no máximo 100 caracteres</div>
-          </div>
+          <app-form-field-error [form-control]="resourceForm.get('name')"></app-form-field-error>
         </div>
 
         <div class="form-group col-md-8">
           <label for="description">Descrição</label>
           <input type="text" class="form-control" id="description" formControlName="description">
         
-          <div class="text-danger" *ngIf="resourceForm.get('description').invalid && resourceForm.get('description').touched">
-            <div *ngIf="resourceForm.get('description').errors.required">campo obrigatório</div>
-            <div *ngIf="resourceForm.get('description').errors.minLength">deve ter no mínimo 2 caracteres</div>
-            <div *ngIf="resourceForm.get('description').errors.maxLength">deve ter no máximo 200 caracteres</div>
-          </div>
+          <app-form-field-error [form-control]="resourceForm.get('description')"></app-form-field-error>
         </div>
 
       </div>
