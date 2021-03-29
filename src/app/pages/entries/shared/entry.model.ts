@@ -21,6 +21,17 @@ export class Entry extends BaseResourceModel{
         revenue: 'Receita'
     };
 
+    static typeOptions(): Array<any> {
+        return Object.entries(Entry.types).map(
+          ([value, text]) => {
+            return {
+              text: text,
+              value: value
+            }
+          }
+        )
+    }
+
     static fromJson(jsonData: any): Entry {
         return Object.assign(new Entry(), jsonData);
     }

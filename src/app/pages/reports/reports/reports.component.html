@@ -1,0 +1,88 @@
+<app-bread-crumb 
+  [items]="[{text: 'Relatório de Receitas e Despesas', link: '/reports'}]">
+</app-bread-crumb>
+
+<app-page-header
+  page-title="Relatório de Receitas e Despesas"
+  [show-button]="false"
+></app-page-header>
+
+<div class="card">
+  <div class="card-header">
+    Selecione o Mês e Ano para gerar os relatórios:
+  </div>
+
+  <div class="card-body">
+    <div class="form-row">
+      <div class="form-group col-md-7">
+        <label for="month">Mês</label>
+        <select #month name="month" id="month" class="form-control">
+          <option value="">Selecione um mês</option>
+          <option *ngFor="let option of monthOptions" [value]="option.value">
+            {{ option.text }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group col-md-5">
+        <label for="year">Ano</label>
+        <select #year name="year" id="year" class="form-control">
+          <option value="">Selecione um ano</option>
+          <option *ngFor="let option of yearOptions" [value]="option.value">
+            {{ option.text }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-md text-right">
+        <button type="button" (click)="generateReports()" class="btn btn-primary">
+          Gerar Relatórios
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card-deck mt-5 mb-5">
+
+  <div class="card text-center text-white bg-success">
+    <div class="card-header">
+      Total de Receitas
+    </div>
+    <div class="card-body">
+      {{ revenueTotal }}
+    </div>
+  </div>
+
+  <div class="card text-center text-white bg-danger">
+    <div class="card-header">
+      Total de Despesas
+    </div>
+    <div class="card-body">
+      {{ expenseTotal }}
+    </div>
+  </div>
+
+  <div class="card text-center text-white bg-primary">
+    <div class="card-header">
+      Saldo
+    </div>
+    <div class="card-body">
+      {{ balance }}
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<div class="row mt-5 mb-4">
+  <div class="col-md-6">
+    <p-chart type="bar" [data]="revenueChartData" [options]="chartOptions"></p-chart>
+  </div>
+
+  <div class="col-md-6">
+    <p-chart type="bar" [data]="expenseChartData" [options]="chartOptions"></p-chart>
+  </div>
+</div>

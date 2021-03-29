@@ -1,6 +1,6 @@
-<app-bread-crumb 
-  [items]="[{text: 'Lançamentos', link: '/entries' }, { text: pageTitle }]">
-</app-bread-crumb>
+<app-bread-crumb
+  [items]="[{text: 'Lançamentos', link: '/entries'}, {text: pageTitle}]"
+></app-bread-crumb>
 
 <app-page-header
   [page-title]="pageTitle"
@@ -9,23 +9,22 @@
   button-class="btn btn-light"
 ></app-page-header>
 
+
 <form [formGroup]="resourceForm" (submit)="submitForm()">
 
   <div class="card">
     <div class="card-header">
-      Informações sobre o lançamento
+      Informações sobre o Lançamento
     </div>
 
     <div class="card-body">
-
       <div class="form-row">
 
         <div class="form-group col-md-2">
           <label for="type">Tipo</label>
+
           <select name="type" id="type" formControlName="type" class="form-control">
-            <option *ngFor="let option of typeOptions" [value]="option.value">
-              {{ option.text }}
-            </option>
+            <option *ngFor="let option of typeOptions" [value]="option.value">{{ option.text }}</option>
           </select>
 
           <app-form-field-error [form-control]="resourceForm.get('type')"></app-form-field-error>
@@ -34,9 +33,8 @@
         <div class="form-group col-md-5">
           <label for="name">Lançamento</label>
           <input type="text" class="form-control" id="name" formControlName="name">
-
+          
           <app-form-field-error [form-control]="resourceForm.get('name')"></app-form-field-error>
-          </div>
         </div>
 
         <div class="form-group col-md-3">
@@ -53,10 +51,9 @@
 
         <div class="form-group col-md-2">
           <label for="date">Data</label>
-          <p-calendar 
-            id="date" 
-            name="date"
-            formControlName="date" 
+          <p-calendar
+            id="date"
+            formControlName="date"
             inputStyleClass="form-control"
             dataType="string"
             dateFormat="dd/mm/yy"
@@ -66,58 +63,49 @@
 
           <app-form-field-error [form-control]="resourceForm.get('date')"></app-form-field-error>
         </div>
-
       </div>
+
 
       <div class="form-row">
 
         <div class="form-group col-md-2">
           <label for="paid">Pago</label>
-
           <div class="btn-group">
-            <label 
-              class="btn btn-outline-info" 
-              [class.active]="resourceForm.get('paid').value == true"
-              (click)="resourceForm.get('paid').setValue(true)">
+            <label (click)="resourceForm.get('paid').setValue(true)" [class.active]="resourceForm.get('paid').value == true" class="btn btn-outline-info">
               Pago
             </label>
-
-            <label 
-              class="btn btn-outline-info" 
-              [class.active]="resourceForm.get('paid').value == false"
-              (click)="resourceForm.get('paid').setValue(false)">
+            <label (click)="resourceForm.get('paid').setValue(false)" [class.active]="resourceForm.get('paid').value == false" class="btn btn-outline-info">
               Pendente
             </label>
           </div>
 
-          <div class="text-danger" *ngIf="resourceForm.get('paid').invalid && resourceForm.get('paid').touched">
-            <div *ngIf="resourceForm.get('paid').errors.required">campo obrigatório</div>
-          </div>
+          <app-form-field-error [form-control]="resourceForm.get('paid')"></app-form-field-error>
         </div>
+
 
         <div class="form-group col-md-3">
           <label for="categoryId">Categoria</label>
+
           <select name="categoryId" id="categoryId" formControlName="categoryId" class="form-control">
-            <option *ngFor="let category of categories" [value]="category.id">
-              {{ category.name }}
-            </option>
+            <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
           </select>
 
-           <app-form-field-error [form-control]="resourceForm.get('categoryId')"></app-form-field-error>
+          <app-form-field-error [form-control]="resourceForm.get('categoryId')"></app-form-field-error>
         </div>
 
         <div class="form-group col-md-7">
           <label for="description">Descrição</label>
           <input type="text" class="form-control" id="description" formControlName="description">
+
+          <app-form-field-error [form-control]="resourceForm.get('description')"></app-form-field-error>
         </div>
-
       </div>
-
+    </div>
   </div>
 
   <app-server-error-messages [server-error-messages]="serverErrorMessages"></app-server-error-messages>
 
-  <button type="submit" class="btn btn-primary float-right mt-3" [disabled]="submittingForm || resourceForm.invalid">
+  <button [disabled]="submittingForm || resourceForm.invalid" type="submit" class="btn btn-primary btn-lg float-right mt-3">
     Salvar
   </button>
 

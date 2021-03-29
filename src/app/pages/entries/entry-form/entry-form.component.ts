@@ -16,6 +16,7 @@ import { BaseResourceFormComponent } from 'src/app/shared/components/base-resour
 export class EntryFormComponent extends BaseResourceFormComponent<Entry> {
 
   categories: Array<Category>;
+  typeOptions = [];
 
   imaskConfig = {
     mask: Number,
@@ -49,18 +50,8 @@ export class EntryFormComponent extends BaseResourceFormComponent<Entry> {
 
   ngOnInit() {
     this.loadCategories();
+    this.typeOptions = Entry.typeOptions();
     super.ngOnInit();
-  }
-
-  get typeOptions(): Array<any> {
-    return Object.entries(Entry.types).map(
-      ([value, text]) => {
-        return {
-          text: text,
-          value: value
-        }
-      }
-    )
   }
 
   loadCategories() {
